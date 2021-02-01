@@ -63,18 +63,18 @@ public class AuthorController {
         }
     }
     public static void deleteAuthor(Context ctx) throws SQLException {
-        if (Service.authentication(ctx)) {
-            if (Service.authorization(ctx) == Role.ADMIN) {
+//        if (Service.authentication(ctx)) {
+//            if (Service.authorization(ctx) == Role.ADMIN) {
                 int id = Integer.parseInt(ctx.pathParam("id"));
                 DatabaseConfiguration.authorDao.deleteById(id);
                 ctx.status(204);
             }
-            else {
-                ctx.status(403);
-            }
-        }
-        else {
-            ctx.status(401);
-        }
-    }
+//            else {
+//                ctx.status(403);
+//            }
+//        }
+//        else {
+//            ctx.status(401);
+//        }
+//    }
 }

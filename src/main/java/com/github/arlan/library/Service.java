@@ -25,6 +25,7 @@ public class Service {
         for (User us : DatabaseConfiguration.userDao.queryForAll()) {
             if (us.getLogin().equals(userName) && BCrypt.checkpw(userPas, us.getPassword())) {
                 check = true;
+                ctx.status(200);
             }
         }
         return check;
