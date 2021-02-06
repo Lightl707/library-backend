@@ -35,6 +35,22 @@ public class Service {
         if (searchUser(ctx).getRole() == Role.ADMIN) return Role.ADMIN;
         else return Role.USER;
 }
+
+    public static Translatable_String searchTS(Context ctx) throws SQLException {
+        Translatable_String translatable_string =null;
+        for (Translatable_String ts: DatabaseConfiguration.translateDao.queryForAll()) {
+            if (ts.getText()== translatable_string.getText()) {
+                translatable_string = ts ;
+            }
+        }
+        if (translatable_string != null)
+            return translatable_string;
+        else {
+            ctx.status(404);
+            throw new RuntimeException();
+        }
+    }
+
     public static User searchUser(Context ctx) throws SQLException {
         String userName = ctx.basicAuthCredentials().getUsername();
         User user = null;
@@ -51,16 +67,15 @@ public class Service {
         }
     }
 
-    public static User searchAuthor(Context ctx) throws SQLException {
-        String userName = ctx.basicAuthCredentials().getUsername();
-        User user = null;
-        for (User us : DatabaseConfiguration.userDao.queryForAll()) {
-            if (us.getLogin().equals(userName)) {
-                user = us;
+    public static Author searchAuthorNickname(Context ctx) throws SQLException {
+        Author author  =null;
+        for (Author au: DatabaseConfiguration.authorDao.queryForAll()) {
+            if (au.getNickname()== author.getNickname()) {
+                author = au ;
             }
         }
-        if (user != null)
-            return user;
+        if (author != null)
+            return author;
         else {
             ctx.status(404);
             throw new RuntimeException();
