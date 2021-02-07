@@ -19,6 +19,7 @@ public class BookController {
             if (Service.authorization(ctx) == Role.ADMIN) {
                 String json = ctx.body();
                 Book book;
+                Service.searchTS(ctx);
                 ObjectMapper obMap = ObjectMapperFactory.createObjectMapper(Book.class);
                 book = obMap.readValue(json, Book.class);
                 DatabaseConfiguration.bookDao.create(book);

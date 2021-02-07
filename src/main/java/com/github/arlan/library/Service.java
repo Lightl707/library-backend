@@ -1,11 +1,13 @@
 package com.github.arlan.library;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.arlan.library.DatabaseConfiguration;
 import com.github.arlan.library.deserializers.*;
 import com.github.arlan.library.models.*;
 import com.github.arlan.library.serializers.*;
+import com.j256.ormlite.dao.Dao;
 import io.javalin.http.Context;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -35,6 +37,13 @@ public class Service {
         if (searchUser(ctx).getRole() == Role.ADMIN) return Role.ADMIN;
         else return Role.USER;
 }
+
+
+    public static void checkAuthentication (Context ctx) throws SQLException {
+        if(!authentication(ctx))
+        throw new WebException("Ошибка авторизации",400);
+    }
+
 
     public static Translatable_String searchTS(Context ctx) throws SQLException {
         Translatable_String translatable_string =null;
@@ -89,6 +98,34 @@ public class Service {
             return forSerialize(om, sm, nameClass);
         else
             return forDeserialize(om, sm, nameClass);
+    }
+
+    public static void checkDoesBasicAuthEmpty(Context ctx) throws JsonProcessingException {
+        if (!ctx.basicAuthCredentialsExist())
+            throw new WebException("Basic auth is empty",400);
+    }
+
+    public static User getUserByLogin(String login) throws SQLException {
+        for(User user: DatabaseConfiguration.userDao.queryForAll()){
+            if(user.getLogin()!=null) {
+                if (user.getLogin().equals(login)) {
+                    return user;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void getAuthorized(Context ctx) throws JsonProcessingException, SQLException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        checkDoesBasicAuthEmpty(ctx);
+        checkAuthentication(ctx);
+        SimpleModule simpleModule = new SimpleModule();
+
+        simpleModule.addSerializer(User.class, new com.github.arlan.library.serializers.UserSerializer());
+        objectMapper.registerModule(simpleModule);
+
+        ctx.result(objectMapper.writeValueAsString(getUserByLogin(ctx.basicAuthCredentials().getUsername())));
     }
 
     public static ObjectMapper forSerialize(ObjectMapper om, SimpleModule sm, Class<?> nameClass) {

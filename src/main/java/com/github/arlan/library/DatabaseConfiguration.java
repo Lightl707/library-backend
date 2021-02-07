@@ -29,7 +29,7 @@ public class DatabaseConfiguration {
 
     static {
         try {
-            connectionSource = new JdbcConnectionSource("jdbc:sqlite://C:\\Users\\User\\Desktop\\library.db");
+            connectionSource = new JdbcConnectionSource("jdbc:library.db");
             TableUtils.createTableIfNotExists(connectionSource, User.class);
             TableUtils.createTableIfNotExists(connectionSource, ReleaseData.class);
             TableUtils.createTableIfNotExists(connectionSource, Publisher.class);
