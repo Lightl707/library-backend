@@ -21,7 +21,7 @@ public class Main {
         }).start(17071);
 
         app.get("/search", ctx -> Service.searchUser(ctx));
-        app.post("/authorized", ctx -> Service.getAuthorized(ctx));
+        app.get("/authorized", ctx -> Service.getAuthorized(ctx));
         app.post("/user/", ctx -> UserController.createUser(ctx));
         app.get("/user/", ctx -> UserController.getAll(ctx));
         app.get("/user/:id", ctx -> UserController.getById(ctx));

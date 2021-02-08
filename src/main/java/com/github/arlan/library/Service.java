@@ -39,24 +39,38 @@ public class Service {
 }
 
 
-    public static void checkAuthentication (Context ctx) throws SQLException {
-        if(!authentication(ctx))
-        throw new WebException("Ошибка авторизации",400);
-    }
+//    public static void checkAuthentication (Context ctx) throws SQLException {
+//        if(!authentication(ctx))
+//        throw new WebException("Ошибка авторизации",400);
+//    }
 
 
-    public static Translatable_String searchTS(Context ctx) throws SQLException {
-        Translatable_String translatable_string =null;
+    public static Translatable_String searchTS(String text) throws SQLException {
+        Translatable_String translatable_string = null;
         for (Translatable_String ts: DatabaseConfiguration.translateDao.queryForAll()) {
-            if (ts.getText()== translatable_string.getText()) {
+            if (ts.getText().equals(text)) {
                 translatable_string = ts ;
             }
         }
         if (translatable_string != null)
             return translatable_string;
         else {
-            ctx.status(404);
-            throw new RuntimeException();
+            return null;
+        }
+    }
+
+
+    public static Author searchAuthor(String nickname) throws SQLException {
+        Author author = null;
+        for (Author au: DatabaseConfiguration.authorDao.queryForAll()) {
+            if (au.getNickname().equals(nickname)) {
+                author = au ;
+            }
+        }
+        if (author != null)
+            return author;
+        else {
+            return null;
         }
     }
 
@@ -119,7 +133,7 @@ public class Service {
     public static void getAuthorized(Context ctx) throws JsonProcessingException, SQLException {
         ObjectMapper objectMapper = new ObjectMapper();
         checkDoesBasicAuthEmpty(ctx);
-        checkAuthentication(ctx);
+//        checkAuthentication(ctx);
         SimpleModule simpleModule = new SimpleModule();
 
         simpleModule.addSerializer(User.class, new com.github.arlan.library.serializers.UserSerializer());

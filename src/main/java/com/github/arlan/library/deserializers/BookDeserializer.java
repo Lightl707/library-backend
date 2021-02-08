@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.github.arlan.library.DatabaseConfiguration;
+import com.github.arlan.library.Service;
 import com.github.arlan.library.models.Book;
 import com.github.arlan.library.models.Company;
 
@@ -23,15 +24,14 @@ public class BookDeserializer extends StdDeserializer<Book> {
         Book book = new Book();
         JsonNode node = parser.getCodec().readTree(parser);
 
-        book.setId(node.get("id").asInt());
         try {
-            book.setAuthor(DatabaseConfiguration.authorDao.queryForId(node.get("author").asInt()));
+            book.setAuthor(Service.searchAuthor(node.get("author").asText()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         try {
-            book.setOriginal_Title(DatabaseConfiguration.translateDao.queryForId(node.get("original_title").asInt()));
+            book.setOriginal_Title(Service.searchTS(node.get("original_title").asText()));
         } catch (SQLException e) {
             e.printStackTrace();
         }

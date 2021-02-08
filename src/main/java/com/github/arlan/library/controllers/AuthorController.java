@@ -15,22 +15,22 @@ import java.sql.SQLException;
 public class AuthorController {
 
     public static void addAuthor(Context ctx) throws IOException, SQLException {
-        if (Service.authentication(ctx)) {
-            if (Service.authorization(ctx) == Role.ADMIN) {
+//        if (Service.authentication(ctx)) {
+//            if (Service.authorization(ctx) == Role.ADMIN) {
                 String json = ctx.body();
                 Author author;
                 ObjectMapper obMap = ObjectMapperFactory.createObjectMapper(Author.class);
                 author = obMap.readValue(json, Author.class);
                 DatabaseConfiguration.authorDao.create(author);
                 ctx.status(201);
-            }
-            else {
-                ctx.status(403);
-            }
-        }
-        else {
-            ctx.status(401);
-        }
+//            }
+//            else {
+//                ctx.status(403);
+//            }
+//        }
+//        else {
+//            ctx.status(401);
+//        }
     }
     public static void getAllAuthor(Context ctx) throws JsonProcessingException, SQLException {
         ObjectMapper om = Service.createObjectMapper(true, Author.class);
